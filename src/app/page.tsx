@@ -1,103 +1,143 @@
 import Image from "next/image";
+import { images } from "@/constants/image";
+import { icons } from "@/constants/icons";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className=" h-full w-full pt-[9dvh]">
+      {/* Hero Section */}
+      <div className=" w-full h-[87dvh] bg-[#AEDADB] flex items-end justify-center ">
+        <div className="w-[90%] h-[80dvh] flex items-end justify-center ">
+          <div className="w-[45%]  h-[72dvh] items-start ">
+            <div className="h-[50dvh] flex items-start flex-col justify-between">
+              <p className="text-[65px] font-[700] leading-[77px] ">
+                Virtual HR & Career Support
+              </p>
+              <p className="text-[45px] font-[700] leading-[58px] text-background">
+                Helping Businesses Hire and Job Seekers Succeed
+              </p>
+              <p className="text-[19px] font-[500] leading-[29px]">
+                Whether you're a small business looking for recruitment & HR
+                support or a job seeker needing career coaching, I provide
+                expert guidance to help you succeed.
+              </p>
+            </div>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          <div className="w-[45%] h-[72dvh] flex items-end justify-end ">
+            <div className=" w-[69%] h-[60dvh] overflow-hidden">
+              <Image
+                src={images.Hero}
+                alt="Logo"
+                className=" object-cover  w-full h-full "
+                
+              />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* Grid Section */}
+      <div className=" w-full h-full flex items-center justify-center">
+        <div className=" w-[90%] h-full grid gap-4 grid-rows-auto grid-cols-3  pt-4 pb-0  items-center justify-center">
+          <div className=" h-[25dvh] bg-[#013558] flex items-center justify-center hover:bg-gray-400 font-[600] text-white text-[30px] leading-[48px]">
+            Career Development
+          </div>
+          <div className=" h-[25dvh] bg-[#036BB0] flex items-center justify-center hover:bg-gray-400 font-[600] text-white text-[30px] leading-[48px]">
+            Recruitment{" "}
+          </div>
+          <div className=" h-[25dvh] bg-[#013558] flex items-center justify-center hover:bg-gray-400 font-[600] text-white text-[30px] leading-[48px]">
+            Project Management
+          </div>
+          <div className=" h-[25dvh]  bg-[#036BB0] flex items-center justify-center hover:bg-gray-400 font-[600] text-white text-[30px] leading-[48px]">
+            Consultation{" "}
+          </div>
+          <div className=" h-[25dvh] bg-[#013558] flex items-center justify-center hover:bg-gray-400 font-[600] text-white text-[30px] leading-[48px]">
+            Workforce Solutions
+          </div>
+          <div className=" h-[25dvh]  bg-[#036BB0] flex items-center justify-center hover:bg-gray-400 font-[600] text-white text-[30px] leading-[48px]">
+            Business Growth
+          </div>
+        </div>
+      </div>
+
+      {/* Services Section */}
+
+      <div className="w-full h-full flex flex-row pt-12 p-[5%] justify-between">
+        <div className="w-[40%]   h-[100dvh] flex flex-col">
+          <div className=" flex items-center justify-center w-full h-1/2 ">
+            <Image
+              src={icons.Cooperate}
+              alt="icons"
+              className=" w-[70%]  "
+              color="#fffff"
+            />
+          </div>
+          <div className=" flex items-center justify-center w-full h-1/2 ">
+            <Image
+              src={icons.Cooperate}
+              alt="icons"
+              className=" w-[70%]  "
+              color="#fffff"
+            />
+          </div>
+        </div>
+        <div className="w-[56%] h-[115dvh] flex flex-col justify-start items-start text-black ">
+  {/* Students & Graduates Section */}
+  <div className="mb-12 ">
+    <h2 className="text-[40px] font-[700] leading-[48px]">Career Support for Students & Graduates</h2>
+    <p className="text-[16px] mt-4 leading-[24px]">
+      Searching for the right job or launching your career can be overwhelming, but you don’t have to navigate it alone! 
+      At <span className="font-bold">Simms on Talent</span>, we provide <span className="font-bold">career development</span> 
+      support tailored to students and graduates, helping you stand out in the job market.
+    </p>
+    <ul className="mt-4 space-y-2">
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Career Consultation – Get expert guidance on your career path.
+      </li>
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Resume Writing – Build a resume that showcases your skills and achievements.
+      </li>
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Interview Preparation – Gain confidence with personalized coaching.
+      </li>
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Job Searching & Placement – Connect with the right opportunities.
+      </li>
+    </ul>
+    <p className="mt-4 italic font-semibold text-gray-700">
+      Your future starts here! Let’s unlock new opportunities and position you for success.
+    </p>
+  </div>
+
+  {/* Businesses Section */}
+  <div>
+    <h2 className="text-[40px] font-[700] leading-[48px]">Recruitment & Talent Solutions for Businesses</h2>
+    <p className="text-[16px] mt-4 leading-[24px]">
+      Hiring the right talent is essential for business success, but managing recruitment can be time-consuming. 
+      At <span className="font-bold">Simms on Talent</span>, we offer <span className="font-bold">recruitment and HR solutions</span> 
+      designed to help businesses grow with the right workforce.
+    </p>
+    <ul className="mt-4 space-y-2">
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Job Creation & Consultation – Build strong job roles that attract top talent.
+      </li>
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Talent Sourcing – Find qualified professionals for your business needs.
+      </li>
+      <li className="font-[700] text-[19px]">
+        <span className="text-black">•</span> Project & Event Planning – Organize and manage key business functions.
+      </li>
+    </ul>
+    <p className="mt-4 italic font-semibold text-gray-700">
+      We streamline hiring, optimize recruitment strategies, and ensure you have the right team to drive business growth.
+    </p>
+  </div>
+</div>
+
+      </div>
+
+      
     </div>
   );
 }
