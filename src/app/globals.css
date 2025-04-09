@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #035A93;
+  --color-primary: #caf0f8;
+  --color-primaryone: #90e0ef;
+  --color-primarytwo: #00b4d8;
+  --color-primarythree: #0077b6;
+  --color-primaryfour: #03045e;
   --color-background: #ffffff;
+}
 
+div::-webkit-scrollbar, body::-webkit-scrollbar{
+  display: none;
 }
 
