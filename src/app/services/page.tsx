@@ -10,13 +10,45 @@ const ServicesPage = () => {
   const service = searchParams.get('service');
   
   const [isLoading, setIsLoading] = useState(true);
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
-    setTimeout(() => {
+  
+    const delay = setTimeout(() => {
       setIsLoading(false);
+  
+      if (service && contentRef.current && hasInteracted) {
+        const offsetTop = contentRef.current.getBoundingClientRect().top + window.scrollY;
+        const headerOffset = window.innerWidth < 768 ? 60 : window.innerHeight * 0.12;
+  
+        window.scrollTo({
+          top: offsetTop - headerOffset,
+          behavior: 'smooth',
+        });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }, 300);
-  }, [serviceType, service]);
+  
+    return () => clearTimeout(delay);
+  }, [serviceType, service, hasInteracted]);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasInteracted(true);
+    }, 100);
+  
+    return () => clearTimeout(timer);
+  }, []);
+  
+  
+  
+
+
 
   const renderServicesNav = () => (
     <div className="bg-gray-100 p-4 rounded-lg mb-8">
@@ -28,6 +60,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=student&service=career-consultation"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'career-consultation' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
             >
               Career Consultation
@@ -36,6 +69,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=student&service=career-assessments"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'career-assessments' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
             >
               Career Assessments
@@ -44,6 +78,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=student&service=resume-writing"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'resume-writing' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
             >
               Resume Writing
@@ -52,6 +87,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=student&service=interview-preparation"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'interview-preparation' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
             >
               Interview Preparation
@@ -60,6 +96,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=student&service=job-searching"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'job-searching' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
             >
               Job Searching
@@ -68,6 +105,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=student&service=job-placement"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'job-placement' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
             >
               Job Placement
@@ -82,6 +120,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=business&service=event-planning"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'event-planning' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
             >
               Event Planning & Management
@@ -90,6 +129,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=business&service=project-planning"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'project-planning' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
             >
               Project Planning & Management
@@ -98,6 +138,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=business&service=recruitment-planning"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'recruitment-planning' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
             >
               Recruitment Planning & Consultation
@@ -106,6 +147,7 @@ const ServicesPage = () => {
           <li>
             <Link 
               href="/services?type=business&service=job-creation"
+               onClick={() => setHasInteracted(true)}
               className={`hover:text-primarythree ${service === 'job-creation' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
             >
               Job Creation & Consultation
@@ -357,12 +399,16 @@ const ServicesPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8">
-          <div className="md:w-1/4">
+          <div
+           className="md:w-1/4">
             {renderServicesNav()}
           </div>
 
           <div className="md:w-3/4">
-            <div className={`bg-white p-6 rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+            
+            <div
+            ref={contentRef}
+            className={`bg-white p-6 rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
               {renderServiceContent()}
             </div>
           </div>

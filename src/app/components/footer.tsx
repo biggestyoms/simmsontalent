@@ -18,7 +18,7 @@ const Footer = () => {
                 className=" w-full h-full object-contain flex items-center justify-center "
               />
             </div>
-            <div className="w-[45%] flex items-center justify-center gap-[11%]  z-50 h-full ">
+            <div className="w-[45%] flex items-center justify-center gap-[11%]   h-full ">
               <Link
                 href="/about"
                 className=" hover:text-primary text-[16px] leading-[24px] font-[600]"

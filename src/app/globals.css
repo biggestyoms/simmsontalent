@@ -9,7 +9,26 @@
   --color-background: #ffffff;
 }
 
+@layer utilities {
+  @keyframes marquee {
+    0% {
+      transform: translateX(130%);
+    }
+    100% {
+      transform: translateX(-130%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 15s linear infinite;
+  }
+}
 div::-webkit-scrollbar, body::-webkit-scrollbar{
   display: none;
 }
 
+
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}

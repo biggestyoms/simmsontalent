@@ -3,40 +3,42 @@ import { images } from "@/constants/image";
 import { icons } from "@/constants/icons";
 import { CiCircleChevDown } from "react-icons/ci";
 
-const ServiceCard = ({ title, bgColor }: { title: string; bgColor: string }) => (
-  <div 
-    className={`h-[25dvh] rounded-3xl shadow-lg ${bgColor} flex items-center justify-center hover:opacity-60 font-[600] text-white text-[30px] leading-[48px] transition-all`}
+const ServiceCard = ({
+  title,
+  bgColor,
+}: {
+  title: string;
+  bgColor: string;
+}) => (
+  <div
+    className={`md:h-[25dvh] h-[10dvh] rounded-3xl shadow-lg ${bgColor} flex items-center justify-center hover:opacity-60 font-[600] text-white md:text-[30px] text-[20px] md:leading-[48px] leading-tight transition-all`}
   >
     {title}
   </div>
 );
 
-const ServiceSection = ({ 
-  title, 
-  description, 
+const ServiceSection = ({
+  title,
+  description,
   items,
-  highlight 
+  highlight,
 }: {
   title: string;
   description: string;
   items: string[];
   highlight: string;
 }) => (
-  <div className="mb-12">
-    <h2 className="text-[40px] font-[700] leading-[48px]">{title}</h2>
-    <p className="text-[16px] mt-4 leading-[24px]">
-      {description}
-    </p>
+  <div className="mb-12 ">
+    <h2 className="md:text-[40px] text-[40px] leading-tight font-[700] md:leading-[48px]">{title}</h2>
+    <p className="lg:text-[16px] text-[15px] mt-4 lg:leading-[24px]">{description}</p>
     <ul className="mt-4 space-y-2">
       {items.map((item, index) => (
-        <li key={index} className="font-[700] text-[19px]">
+        <li key={index} className="font-[700] lg:text-[19px]">
           <span className="text-black">•</span> {item}
         </li>
       ))}
     </ul>
-    <p className="mt-4 italic font-semibold text-gray-700">
-      {highlight}
-    </p>
+    <p className="mt-4 italic font-semibold text-gray-700">{highlight}</p>
   </div>
 );
 
@@ -54,53 +56,61 @@ export default function Home() {
     "Career Consultation – Get expert guidance on your career path.",
     "Resume Writing – Build a resume that showcases your skills and achievements.",
     "Interview Preparation – Gain confidence with personalized coaching.",
-    "Job Searching & Placement – Connect with the right opportunities."
+    "Job Searching & Placement – Connect with the right opportunities.",
   ];
 
   const businessItems = [
     "Job Creation & Consultation – Build strong job roles that attract top talent.",
     "Talent Sourcing – Find qualified professionals for your business needs.",
-    "Project & Event Planning – Organize and manage key business functions."
+    "Project & Event Planning – Organize and manage key business functions.",
   ];
 
   return (
     <div className="h-full w-full pt-[9dvh] bg-white">
       {/* Hero Section */}
-      <div className="w-full h-[87dvh] flex items-end justify-center">  
-        <div className="w-[90%] h-[80dvh] flex items-center gap-5">
-          <div className="w-[55%] h-[72dvh] items-start relative rounded-3xl">
-            <div className="flex items-start flex-col justify-between">
-              <p className="text-[55px] text-white font-[700] leading-tight bg-primarythree rounded-t-3xl p-4 pr-10 relative">
+      <div className="w-full  lg:h-[90dvh] md:h-[120dvh]  flex lg:items-end items-start justify-center">
+        <div className="lg:w-[90%] lg:h-[90dvh]  h-full  flex lg:flex-row flex-col items-center gap-5">
+          <div className="lg:w-[60%] lg:h-[72dvh]  md:h-[70dvh] h-[80dvh]  items-start md:relative md:rounded-3xl">
+
+            <div className="flex md:items-start   h-full flex-col  lg:justify-start justify-evenly bg-primarythree lg:bg-white pt-16 md:pt-0 ">
+              <p className="lg:text-[55px]   md:text-[96px] text-center lg:text-start text-white font-[700] md:px-[6%] lg:leading-tight md:leading-[96px]  bg-primarythree lg:rounded-t-3xl lg:p-4 lg:pr-10 lg:relative text-[3.5rem] leading-tight">
                 Virtual HR <br /> & Career Support
-                <span className="bg-primarythree absolute w-6 h-6 right-0 bottom-0 -mr-6"></span>
-                <span className="bg-white absolute w-10 h-10 right-0 bottom-0 rounded-full -mr-10"></span>
+                <span className="bg-primarythree absolute  lg:block hidden w-6 h-6 right-0 bottom-0 -mr-6"></span>
+                <span className="bg-white absolute w-10 h-10 lg:block hidden right-0 bottom-0 rounded-full -mr-10"></span>
               </p>
-              <p className="text-[45px] font-[700] leading-[58px] text-background bg-primarythree pt-5 rounded-tr-3xl p-4 pr-10 relative">
+              <p className="lg:text-[40px] md:text-[51px] text-[2rem] lg:text-start text-center px-[6%]  lg:w-full  font-[700] lg:leading-[58px] md:leading-[48px] leading-tight text-background bg-primarythree pt-5 lg:rounded-tr-3xl lg:p-4 lg:pr-10 lg:relative ">
                 Helping Businesses Hire and Job Seekers Succeed
               </p>
-              <p className="text-[16px] text-white font-[500] leading-[20px] bg-primarythree p-4 pb-16 pr-10 relative">
+              <p className="lg:text-[19px] md:px-[6%] lg:px-[2.3%] md:text-[19px] text-[1.1rem] lg:text-start text-center w-full text-white font-[500] md:leading-[20px] leading-tight bg-primarythree p-4 lg:pb-16 lg:pr-10 lg:relative">
                 Whether you're a small business looking for recruitment & HR
                 support or a job seeker needing career coaching, I provide
                 expert guidance to help you succeed.
-                <span className="bg-primarythree absolute w-2 h-3 right-0 bottom-0 -mr-2"></span>
-                <span className="bg-white absolute w-6 h-6 right-0 bottom-0 mb-[2px] rounded-full -mr-6"></span>
+                <span className="bg-primarythree lg:absolute w-2 h-3 right-0 bottom-0 -mr-2"></span>
+                <span className="bg-white lg:absolute w-6 h-6 right-0 bottom-0 mb-[2px] rounded-full -mr-6 "></span>
               </p>
-            </div>
-
-            <div className="absolute bottom-0 w-[90dvw] flex items-center gap-3">
-              <div className="bg-primarythree w-[80dvw] rounded-tr-3xl rounded-br-3xl rounded-bl-3xl h-32"></div>
-              <div className="bg-primarythree rounded-full w-32 h-32 flex items-center justify-center text-white">
-              <CiCircleChevDown size={50}/>
+              <div className="lg:absolute bottom-0 w-[90dvw] lg:flex hidden items-center gap-3">
+              <div className="bg-primarythree w-[80dvw] rounded-tr-3xl rounded-br-3xl rounded-bl-3xl h-30 flex items-center justify-center overflow-hidden">
+                <div className="animate-marquee inline-block overflow-hidden">
+                  <span className="text-xl font-semibold px-4">
+                    Text sliding from right to left in Tailwind!
+                  </span>
+                </div>
+              </div>
+              <div className="bg-primarythree rounded-full w-32 h-32 flex  items-center justify-center text-white">
+                <CiCircleChevDown size={50} />
               </div>
             </div>
+            </div>
+
+        
           </div>
 
-          <div className="w-[45%] h-[72dvh]">
-            <div className="w-[69%] h-[53dvh] overflow-hidden rounded-3xl shadow-md">
+          <div className="lg:w-[37%] w-[95%]  lg:h-[72dvh] h-[40dvh]">
+            <div className="lg:w-[73.5%] w-full lg:h-[53dvh] h-full overflow-hidden rounded-3xl shadow-md">
               <Image
                 src={images.Hero}
                 alt="Logo"
-                className="object-cover w-full h-full"
+                className="  object-cover w-full  h-full"
                 priority
               />
             </div>
@@ -109,41 +119,45 @@ export default function Home() {
       </div>
 
       {/* Grid Section */}
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="w-[90%] h-full grid gap-4 grid-rows-auto grid-cols-3 pt-4 pb-0 items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center pt-5 md:pt-0">
+        <div className="md:w-[90%] w-[98%] lg:h-[60dvh] md:h-[60dvh] text-center  grid gap-4 grid-rows-auto md:grid-cols-3 grid-cols-2 pt-4 pb-0 items-center justify-center">
           {services.map((service, index) => (
-            <ServiceCard key={index} title={service.title} bgColor={service.bgColor} />
+            <ServiceCard
+              key={index}
+              title={service.title}
+              bgColor={service.bgColor}
+            />
           ))}
         </div>
       </div>
 
       {/* Services Section */}
-      <div className="w-full h-full flex flex-row pt-12 p-[5%] justify-between">
-        <div className="w-[40%] h-[100dvh] flex flex-col">
-          <div className="flex items-center justify-center w-full h-1/2">
+      <div className="w-full h-full flex  lg:flex-row flex-col-reverse pt-12 p-[5%] justify-between">
+        <div className="lg:w-[40%]  lg:h-[140dvh] h-[18dvh] w-full flex lg:flex-col flex-row">
+          <div className="flex items-center justify-center w-full lg:h-[70dvh]   ">
             <Image
               src={icons.Cooperate}
               alt="Corporate icon"
-              className="w-[70%]"
+              className="lg:w-[70%] md:w-[60%] w-[79%] "
             />
           </div>
-          <div className="flex items-center justify-center w-full h-1/2">
+          <div className="flex items-center justify-center w-full lg:h-[70dvh] ">
             <Image
               src={icons.Cooperate}
               alt="Corporate icon"
-              className="w-[70%]"
+              className="lg:w-[70%] md:w-[60%] w-[79%] "
             />
           </div>
         </div>
-        
-        <div className="w-[56%] h-[115dvh] flex flex-col justify-start items-start text-black">
+
+        <div className="lg:w-[56%] w-full lg:h-[140dvh] h-full flex flex-col justify-evenly items-start text-black">
           <ServiceSection
             title="Career Support for Students & Graduates"
             description="Searching for the right job or launching your career can be overwhelming, but you don't have to navigate it alone! At Simms on Talent, we provide career development support tailored to students and graduates, helping you stand out in the job market."
             items={careerSupportItems}
             highlight="Your future starts here! Let's unlock new opportunities and position you for success."
           />
-          
+
           <ServiceSection
             title="Recruitment & Talent Solutions for Businesses"
             description="Hiring the right talent is essential for business success, but managing recruitment can be time-consuming. At Simms on Talent, we offer recruitment and HR solutions designed to help businesses grow with the right workforce."
