@@ -7,8 +7,8 @@ import { FaInstagram } from "react-icons/fa6";
 import { FaLinkedinIn } from "react-icons/fa";
 const Footer = () => {
   return (
-    <div className="w-full h-full  flex items-center justify-center">
-      <div className=" w-[90%] h-[45dvh]  flex items-center justify-center">
+<div className="w-full h-full bg-white shadow-[0_-5px_14px_rgba(0,0,0,0.1)] flex items-center justify-center">
+<div className=" w-[90%] h-[45dvh]  flex items-center justify-center">
         <div className=" h-[30dvh] w-full flex flex-col items-center justify-between">
           <div className="w-full h-[10dvh] flex items-center justify-between ">
             <div className="w-[15%] h-full ">
@@ -18,7 +18,7 @@ const Footer = () => {
                 className=" w-full h-full object-contain flex items-center justify-center "
               />
             </div>
-            <div className="w-[45%] flex items-center justify-center gap-[11%]  z-50 h-full ">
+            <div className="w-[45%] flex items-center justify-center gap-[11%]   h-full ">
               <Link
                 href="/about"
                 className=" hover:text-primary text-[16px] leading-[24px] font-[600]"
