@@ -89,7 +89,7 @@ const page = () => {
       {/* Howd you hear about us  */}
       <div>
         <label className="block text-white font-medium mb-2" htmlFor="info">
-          How'd you hear about us ?<span className="text-white">*</span>
+          How&#39;d you hear about us ?<span className="text-white">*</span>
         </label>
         <select
           id="info"

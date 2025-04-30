@@ -1,8 +1,7 @@
 'use client'
 import Link from "next/link";
 import React , {useState}  from "react";
-import { images } from "@/constants/image";
-import Image from "next/image";
+
 import { IoIosArrowDown } from "react-icons/io";
 import { Divide as Hamburger } from 'hamburger-react'
 // import { useEffect } from "react";

@@ -1,17 +1,16 @@
 "use client";
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-const ServicesPage = () => {
+// Component that uses useSearchParams
+function ServicesContent() {
   const searchParams = useSearchParams();
   const serviceType = searchParams.get('type');
   const service = searchParams.get('service');
   
   const [isLoading, setIsLoading] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
-
 
   const contentRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -45,11 +44,6 @@ const ServicesPage = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  
-  
-
-
-
   const renderServicesNav = () => (
     <div className="bg-gray-100 p-4 rounded-lg mb-8">
       <h3 className="font-semibold mb-4 text-lg">Our Services</h3>
@@ -387,7 +381,7 @@ const ServicesPage = () => {
   };
 
   return (
-    <div className="pt-[12vh] w-full min-h-screen pb-12">
+    <div className="w-full min-h-screen pb-12">
       <div className="max-w-6xl mx-auto px-4">
         <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg p-8 mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-center mb-6">
@@ -399,21 +393,44 @@ const ServicesPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8">
-          <div
-           className="md:w-1/4">
+          <div className="md:w-1/4">
             {renderServicesNav()}
           </div>
 
           <div className="md:w-3/4">
-            
             <div
-            ref={contentRef}
-            className={`bg-white p-6 rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+              ref={contentRef}
+              className={`bg-white p-6 rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
               {renderServiceContent()}
             </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Loading component for the Suspense fallback
+function Loading() {
+  return (
+    <div className="pt-[12vh] w-full min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primarythree border-r-transparent" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+        <p className="mt-2 text-gray-700">Loading services...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main page component - wrapped in Suspense
+const ServicesPage = () => {
+  return (
+    <div className="pt-[12vh]">
+      <Suspense fallback={<Loading />}>
+        <ServicesContent />
+      </Suspense>
     </div>
   );
 };
