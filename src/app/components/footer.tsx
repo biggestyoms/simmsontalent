@@ -7,8 +7,8 @@ import { FaInstagram } from "react-icons/fa6";
 import { FaLinkedinIn } from "react-icons/fa";
 const Footer = () => {
   return (
-<div className="w-full h-full bg-white shadow-[0_-5px_14px_rgba(0,0,0,0.1)] flex items-center justify-center">
-<div className=" w-[90%] h-[45dvh]  flex items-center justify-center">
+<div className="w-full h-full bg-[#f3f2f5] shadow-[0_-5px_14px_rgba(0,0,0,0.1)] flex items-center justify-center">
+<div className=" w-[90%] h-[40dvh]  flex items-center justify-center">
         <div className=" h-[30dvh] w-full flex flex-col items-center justify-between">
           <div className="w-full h-[10dvh] flex items-center justify-between ">
             <div className="w-[15%] h-full ">
