@@ -1,438 +1,858 @@
 "use client";
-import React, { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+import React, { useEffect, useState, Suspense, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 
-// Component that uses useSearchParams
-function ServicesContent() {
+// Animation variants remain the same
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.5 },
+  },
+  exit: { opacity: 0, transition: { duration: 0.3 } },
+};
+
+const slideUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+type AnimatedServiceCardProps = {
+  title: string;
+  description: string;
+  link: string;
+  delay?: number;
+};
+
+// AnimatedServiceCard component remains the same
+const AnimatedServiceCard = ({
+  title,
+  description,
+  link,
+  delay = 0,
+}: AnimatedServiceCardProps) => {
+  const cardRef = useRef(null);
+  const isInView = useInView(cardRef, { once: true, amount: 0.3 });
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={slideUp}
+      whileHover={{ y: -8, transition: { duration: 0.2 } }}
+      className="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-all"
+    >
+      <h3 className="text-xl font-semibold mb-3 text-primarythree">{title}</h3>
+      <p className="mb-4">{description}</p>
+      <Link
+        href={link}
+        className="text-primarythree hover:underline inline-flex items-center group"
+      >
+        <span>Explore {title}</span>
+        <motion.span initial={{ x: 0 }} whileHover={{ x: 5 }} className="ml-1">
+          →
+        </motion.span>
+      </Link>
+    </motion.div>
+  );
+};
+
+// Create a new component to handle search params
+const ServiceContentWithParams = () => {
   const searchParams = useSearchParams();
-  const serviceType = searchParams.get('type');
-  const service = searchParams.get('service');
-  
+  const serviceType = searchParams?.get("type");
+  const service = searchParams?.get("service");
+
   const [isLoading, setIsLoading] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [currentService, setCurrentService] = useState<string | null>(null);
 
-  const contentRef = React.useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef(null);
+  const navRef = useRef(null);
+
+  const isHeaderInView = useInView(headerRef, { once: true });
+  const isNavInView = useInView(navRef, { once: true, amount: 0.3 });
+
+  // Safe scroll function that works in browser only
+  const safeScroll = (ref: React.RefObject<HTMLElement | null>, offset = 0) => {
+    if (ref.current) {
+      const offsetTop =
+        ref.current.getBoundingClientRect().top + window.scrollY;
+      const headerOffset =
+        window.innerWidth < 768 ? 60 : window.innerHeight * 0.12;
+      window.scrollTo({
+        top: offsetTop - headerOffset - offset,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     setIsLoading(true);
-  
+
+    if (serviceType && service) {
+      setCurrentService(`${serviceType}-${service}`);
+    }
+
     const delay = setTimeout(() => {
       setIsLoading(false);
-  
+
       if (service && contentRef.current && hasInteracted) {
-        const offsetTop = contentRef.current.getBoundingClientRect().top + window.scrollY;
-        const headerOffset = window.innerWidth < 768 ? 60 : window.innerHeight * 0.12;
-  
-        window.scrollTo({
-          top: offsetTop - headerOffset,
-          behavior: 'smooth',
-        });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        safeScroll(contentRef);
+      } else if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }, 300);
-  
+
     return () => clearTimeout(delay);
   }, [serviceType, service, hasInteracted]);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setHasInteracted(true);
     }, 100);
-  
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   const renderServicesNav = () => (
-    <div className="bg-gray-100 p-4 rounded-lg mb-8">
-      <h3 className="font-semibold mb-4 text-lg">Our Services</h3>
-      
-      <div className="mb-4">
-        <h4 className="font-medium text-primarythree mb-2">For Students</h4>
-        <ul className="space-y-2 ml-4">
-          <li>
-            <Link 
-              href="/services?type=student&service=career-consultation"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'career-consultation' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Career Consultation
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=student&service=career-assessments"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'career-assessments' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Career Assessments
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=student&service=resume-writing"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'resume-writing' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Resume Writing
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=student&service=interview-preparation"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'interview-preparation' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Interview Preparation
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=student&service=job-searching"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'job-searching' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Job Searching
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=student&service=job-placement"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'job-placement' && serviceType === 'student' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Job Placement
-            </Link>
-          </li>
-        </ul>
-      </div>
-      
-      <div>
-        <h4 className="font-medium text-primarythree mb-2">For Businesses</h4>
-        <ul className="space-y-2 ml-4">
-          <li>
-            <Link 
-              href="/services?type=business&service=event-planning"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'event-planning' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Event Planning & Management
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=business&service=project-planning"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'project-planning' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Project Planning & Management
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=business&service=recruitment-planning"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'recruitment-planning' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Recruitment Planning & Consultation
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/services?type=business&service=job-creation"
-               onClick={() => setHasInteracted(true)}
-              className={`hover:text-primarythree ${service === 'job-creation' && serviceType === 'business' ? 'text-primarythree font-medium' : ''}`}
-            >
-              Job Creation & Consultation
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <motion.div
+      ref={navRef}
+      initial="hidden"
+      animate={isNavInView ? "visible" : "hidden"}
+      variants={fadeIn}
+      className="bg-gray-100 p-4 rounded-lg mb-8 shadow-sm hover:shadow-md transition-all"
+    >
+      <motion.h3 variants={slideUp} className="font-semibold mb-4 text-lg">
+        Our Services
+      </motion.h3>
+
+      <motion.div variants={staggerContainer} className="mb-4">
+        <motion.h4
+          variants={slideUp}
+          className="font-medium text-primarythree mb-2"
+        >
+          For Students
+        </motion.h4>
+        <motion.ul variants={staggerContainer} className="space-y-2 ml-4">
+          {[
+            {
+              name: "Career Consultation",
+              path: "/services?type=student&service=career-consultation",
+            },
+            {
+              name: "Career Assessments",
+              path: "/services?type=student&service=career-assessments",
+            },
+            {
+              name: "Resume Writing",
+              path: "/services?type=student&service=resume-writing",
+            },
+            {
+              name: "Interview Preparation",
+              path: "/services?type=student&service=interview-preparation",
+            },
+            {
+              name: "Job Searching",
+              path: "/services?type=student&service=job-searching",
+            },
+            {
+              name: "Job Placement",
+              path: "/services?type=student&service=job-placement",
+            },
+          ].map((item, index) => (
+            <motion.li key={index} variants={slideUp}>
+              <Link
+                href={item.path}
+                onClick={() => setHasInteracted(true)}
+                className={`hover:text-primarythree transition-colors ${
+                  service === item.path.split("service=")[1] &&
+                  serviceType === "student"
+                    ? "text-primarythree font-medium"
+                    : ""
+                }`}
+              >
+                <motion.span
+                  whileHover={{ x: 3 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  className="inline-block"
+                >
+                  {item.name}
+                </motion.span>
+              </Link>
+            </motion.li>
+          ))}
+        </motion.ul>
+      </motion.div>
+
+      <motion.div variants={staggerContainer}>
+        <motion.h4
+          variants={slideUp}
+          className="font-medium text-primarythree mb-2"
+        >
+          For Businesses
+        </motion.h4>
+        <motion.ul variants={staggerContainer} className="space-y-2 ml-4">
+          {[
+            {
+              name: "Event Planning & Management",
+              path: "/services?type=business&service=event-planning",
+            },
+            {
+              name: "Project Planning & Management",
+              path: "/services?type=business&service=project-planning",
+            },
+            {
+              name: "Recruitment Planning & Consultation",
+              path: "/services?type=business&service=recruitment-planning",
+            },
+            {
+              name: "Job Creation & Consultation",
+              path: "/services?type=business&service=job-creation",
+            },
+          ].map((item, index) => (
+            <motion.li key={index} variants={slideUp}>
+              <Link
+                href={item.path}
+                onClick={() => setHasInteracted(true)}
+                className={`hover:text-primarythree transition-colors ${
+                  service === item.path.split("service=")[1] &&
+                  serviceType === "business"
+                    ? "text-primarythree font-medium"
+                    : ""
+                }`}
+              >
+                <motion.span
+                  whileHover={{ x: 3 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  className="inline-block"
+                >
+                  {item.name}
+                </motion.span>
+              </Link>
+            </motion.li>
+          ))}
+        </motion.ul>
+      </motion.div>
+    </motion.div>
   );
 
   const renderServiceContent = () => {
+    // The content rendering logic remains the same
     if (!serviceType || !service) {
       return (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold mb-6">Our Professional Services</h2>
-          <p className="text-lg max-w-2xl mx-auto mb-8">
-            At Simms on Talent, we offer a comprehensive range of services designed to help both students and businesses succeed. 
-            Please select a specific service from the menu to learn more.
-          </p>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold mb-3 text-primarythree">For Students</h3>
-              <p className="mb-4">We provide career guidance, resume assistance, and job placement services to help students transition into successful professionals.</p>
-              <Link href="/services?type=student&service=career-consultation" className="text-primarythree hover:underline">
-                Explore Student Services →
-              </Link>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold mb-3 text-primarythree">For Businesses</h3>
-              <p className="mb-4">We offer event management, project planning, and recruitment services to help businesses optimize their operations and talent acquisition.</p>
-              <Link href="/services?type=business&service=recruitment-planning" className="text-primarythree hover:underline">
-                Explore Business Services →
-              </Link>
-            </div>
-          </div>
-        </div>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="text-center py-12"
+        >
+          <motion.h2 variants={slideUp} className="text-3xl font-bold mb-6">
+            Our Professional Services
+          </motion.h2>
+          <motion.p
+            variants={slideUp}
+            className="text-lg max-w-2xl mx-auto mb-8"
+          >
+            At Simms on Talent, we offer a comprehensive range of services
+            designed to help both students and businesses succeed. Please select
+            a specific service from the menu to learn more.
+          </motion.p>
+          <motion.div
+            variants={staggerContainer}
+            className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          >
+            <AnimatedServiceCard
+              title="For Students"
+              description="We provide career guidance, resume assistance, and job placement services to help students transition into successful professionals."
+              link="/services?type=student&service=career-consultation"
+            />
+            <AnimatedServiceCard
+              title="For Businesses"
+              description="We offer event management, project planning, and recruitment services to help businesses optimize their operations and talent acquisition."
+              link="/services?type=business&service=recruitment-planning"
+            />
+          </motion.div>
+        </motion.div>
       );
     }
 
     // Student Services Content
-    if (serviceType === 'student') {
+    if (serviceType === "student") {
       switch (service) {
-        case 'career-consultation':
+        case "career-consultation":
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Career Consultation</h1>
-              <p className="mb-4">Our career consultation services provide personalized guidance to help students identify their strengths, interests, and potential career paths. Through one-on-one sessions with our experienced career counselors, students gain clarity on their professional goals and develop actionable plans to achieve them.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">What We Offer:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Personalized career path exploration</li>
-                <li className="mb-2">Skills and interests assessment</li>
-                <li className="mb-2">Industry insights and market trends</li>
-                <li className="mb-2">Academic program alignment with career goals</li>
-                <li className="mb-2">Long-term career planning strategies</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Book a Consultation
-              </button>
-            </div>
+            <motion.div
+              key="career-consultation"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">
+                Career Consultation
+              </motion.h1>
+              <motion.p variants={slideUp} className="mb-4">
+                Our career consultation services provide personalized guidance
+                to help students identify their strengths, interests, and
+                potential career paths. Through one-on-one sessions with our
+                experienced career counselors, students gain clarity on their
+                professional goals and develop actionable plans to achieve them.
+              </motion.p>
+              <motion.h2
+                variants={slideUp}
+                className="text-xl font-semibold mt-6 mb-3"
+              >
+                What We Offer:
+              </motion.h2>
+              <motion.ul
+                variants={staggerContainer}
+                className="list-disc ml-6 mb-6"
+              >
+                {[
+                  "Personalized career path exploration",
+                  "Skills and interests assessment",
+                  "Industry insights and market trends",
+                  "Academic program alignment with career goals",
+                  "Long-term career planning strategies",
+                ].map((item, index) => (
+                  <motion.li key={index} variants={slideUp} className="mb-2">
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <motion.a href="tel:+14165229579" className="block">
+                <motion.button
+                  variants={slideUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+                >
+                  Book a Consultation
+                </motion.button>
+              </motion.a>
+            </motion.div>
           );
-        case 'career-assessments':
+        case "career-assessments":
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Career Assessments</h1>
-              <p className="mb-4">Our comprehensive career assessment tools help students identify their aptitudes, interests, values, and personality traits to discover suitable career options. These scientifically validated assessments provide valuable insights that inform educational and career decisions.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Assessment Tools Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Skills and aptitude evaluations</li>
-                <li className="mb-2">Personality type assessments</li>
-                <li className="mb-2">Work values inventory</li>
-                <li className="mb-2">Career interest profiling</li>
-                <li className="mb-2">Detailed results interpretation and guidance</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Take an Assessment
-              </button>
-            </div>
+            <motion.div
+              key="career-assessments"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">
+                Career Assessments
+              </motion.h1>
+              <motion.p variants={slideUp} className="mb-4">
+                Our comprehensive career assessment tools help students identify
+                their aptitudes, interests, values, and personality traits to
+                discover suitable career options. These scientifically validated
+                assessments provide valuable insights that inform educational
+                and career decisions.
+              </motion.p>
+              <motion.h2
+                variants={slideUp}
+                className="text-xl font-semibold mt-6 mb-3"
+              >
+                Our Assessment Tools Include:
+              </motion.h2>
+              <motion.ul
+                variants={staggerContainer}
+                className="list-disc ml-6 mb-6"
+              >
+                {[
+                  "Skills and aptitude evaluations",
+                  "Personality type assessments",
+                  "Work values inventory",
+                  "Career interest profiling",
+                  "Detailed results interpretation and guidance",
+                ].map((item, index) => (
+                  <motion.li key={index} variants={slideUp} className="mb-2">
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <motion.a href="tel:+14165229579" className="block">
+                <motion.button
+                  variants={slideUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+                >
+                  Book a Consultation
+                </motion.button>
+              </motion.a>
+            </motion.div>
           );
-        case 'resume-writing':
+        case "resume-writing":
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Resume Writing</h1>
-              <p className="mb-4">Our professional resume writing service helps students create compelling resumes that stand out to employers. We work with you to highlight your unique skills, experiences, and achievements in a format that catches attention and increases your chances of landing interviews.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Resume Services Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Professional resume writing and formatting</li>
-                <li className="mb-2">Achievement-focused content development</li>
-                <li className="mb-2">Industry-specific keyword optimization</li>
-                <li className="mb-2">ATS (Applicant Tracking System) compatibility</li>
-                <li className="mb-2">Cover letter creation and customization</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Get Your Professional Resume
-              </button>
-            </div>
+            <motion.div
+              key="resume-writing"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">
+                Resume Writing
+              </motion.h1>
+              <motion.p variants={slideUp} className="mb-4">
+                Our professional resume writing service helps students create
+                compelling resumes that stand out to employers. We work with you
+                to highlight your unique skills, experiences, and achievements
+                in a format that catches attention and increases your chances of
+                landing interviews.
+              </motion.p>
+              <motion.h2
+                variants={slideUp}
+                className="text-xl font-semibold mt-6 mb-3"
+              >
+                Our Resume Services Include:
+              </motion.h2>
+              <motion.ul
+                variants={staggerContainer}
+                className="list-disc ml-6 mb-6"
+              >
+                {[
+                  "Professional resume writing and formatting",
+                  "Achievement-focused content development",
+                  "Industry-specific keyword optimization",
+                  "ATS (Applicant Tracking System) compatibility",
+                  "Cover letter creation and customization",
+                ].map((item, index) => (
+                  <motion.li key={index} variants={slideUp} className="mb-2">
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <motion.a href="tel:+14165229579" className="block">
+                <motion.button
+                  variants={slideUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+                >
+                  Book a Consultation
+                </motion.button>
+              </motion.a>
+            </motion.div>
           );
-        case 'interview-preparation':
+        case "interview-preparation":
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Interview Preparation</h1>
-              <p className="mb-4">Our interview preparation service equips students with the skills and confidence needed to excel in job interviews. Through mock interviews, personalized feedback, and strategic coaching, we help you make a strong impression and effectively communicate your value to potential employers.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Interview Prep Includes:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Mock interview sessions with industry specialists</li>
-                <li className="mb-2">Common and challenging question preparation</li>
-                <li className="mb-2">Behavioral interview techniques</li>
-                <li className="mb-2">Non-verbal communication coaching</li>
-                <li className="mb-2">Post-interview follow-up strategies</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Schedule Interview Training
-              </button>
-            </div>
+            <motion.div
+              key="interview-preparation"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">
+                Interview Preparation
+              </motion.h1>
+              <motion.p variants={slideUp} className="mb-4">
+                Our interview preparation service equips students with the
+                skills and confidence needed to excel in job interviews. Through
+                mock interviews, personalized feedback, and strategic coaching,
+                we help you make a strong impression and effectively communicate
+                your value to potential employers.
+              </motion.p>
+              <motion.h2
+                variants={slideUp}
+                className="text-xl font-semibold mt-6 mb-3"
+              >
+                Our Interview Prep Includes:
+              </motion.h2>
+              <motion.ul
+                variants={staggerContainer}
+                className="list-disc ml-6 mb-6"
+              >
+                {[
+                  "Mock interview sessions with industry specialists",
+                  "Common and challenging question preparation",
+                  "Behavioral interview techniques",
+                  "Non-verbal communication coaching",
+                  "Post-interview follow-up strategies",
+                ].map((item, index) => (
+                  <motion.li key={index} variants={slideUp} className="mb-2">
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <motion.a href="tel:+14165229579" className="block">
+                <motion.button
+                  variants={slideUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+                >
+                  Book a Consultation
+                </motion.button>
+              </motion.a>
+            </motion.div>
           );
-        case 'job-searching':
+        case "job-searching":
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Job Searching</h1>
-              <p className="mb-4">Our job search assistance helps students navigate the complex job market efficiently. We provide access to exclusive job listings, networking opportunities, and strategies to identify and pursue positions that align with your career goals and qualifications.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Job Search Support Includes:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Job market research and industry insights</li>
-                <li className="mb-2">Access to our exclusive job database</li>
-                <li className="mb-2">Application strategy development</li>
-                <li className="mb-2">Networking event opportunities</li>
-                <li className="mb-2">Social media and LinkedIn optimization</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Start Your Job Search
-              </button>
-            </div>
+            <motion.div
+              key="job-searching"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">
+                Job Searching
+              </motion.h1>
+              <motion.p variants={slideUp} className="mb-4">
+                Our job search assistance helps students navigate the complex
+                job market efficiently. We provide access to exclusive job
+                listings, networking opportunities, and strategies to identify
+                and pursue positions that align with your career goals and
+                qualifications.
+              </motion.p>
+              <motion.h2
+                variants={slideUp}
+                className="text-xl font-semibold mt-6 mb-3"
+              >
+                Our Job Search Support Includes:
+              </motion.h2>
+              <motion.ul
+                variants={staggerContainer}
+                className="list-disc ml-6 mb-6"
+              >
+                {[
+                  "Job market research and industry insights",
+                  "Access to our exclusive job database",
+                  "Application strategy development",
+                  "Networking event opportunities",
+                  "Social media and LinkedIn optimization",
+                ].map((item, index) => (
+                  <motion.li key={index} variants={slideUp} className="mb-2">
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <motion.a href="tel:+14165229579" className="block">
+                <motion.button
+                  variants={slideUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+                >
+                  Book a Consultation
+                </motion.button>
+              </motion.a>
+            </motion.div>
           );
-        case 'job-placement':
+        case "job-placement":
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Job Placement</h1>
-              <p className="mb-4">Our job placement service connects qualified students with appropriate employment opportunities. We leverage our extensive network of employer relationships to help you secure positions that match your skills, experience, and career aspirations.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Placement Services Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Personalized job matching</li>
-                <li className="mb-2">Direct employer introductions</li>
-                <li className="mb-2">Interview arrangement and coordination</li>
-                <li className="mb-2">Offer negotiation assistance</li>
-                <li className="mb-2">Post-placement support and coaching</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Enroll in Placement Services
-              </button>
-            </div>
+            <motion.div
+              key="job-placement"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">
+                Job Placement
+              </motion.h1>
+              <motion.p variants={slideUp} className="mb-4">
+                Our job placement service connects qualified students with
+                appropriate employment opportunities. We leverage our extensive
+                network of employer relationships to help you secure positions
+                that match your skills, experience, and career aspirations.
+              </motion.p>
+              <motion.h2
+                variants={slideUp}
+                className="text-xl font-semibold mt-6 mb-3"
+              >
+                Our Placement Services Include:
+              </motion.h2>
+              <motion.ul
+                variants={staggerContainer}
+                className="list-disc ml-6 mb-6"
+              >
+                {[
+                  "Personalized job matching",
+                  "Direct employer introductions",
+                  "Interview arrangement and coordination",
+                  "Offer negotiation assistance",
+                  "Post-placement support and coaching",
+                ].map((item, index) => (
+                  <motion.li key={index} variants={slideUp} className="mb-2">
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <motion.a href="tel:+14165229579" className="block">
+                <motion.button
+                  variants={slideUp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+                >
+                  Book a Consultation
+                </motion.button>
+              </motion.a>
+            </motion.div>
           );
         default:
-          return <div>Please select a specific service</div>;
-      }
-    }
-    
-    // Business Services Content
-    if (serviceType === 'business') {
-      switch (service) {
-        case 'event-planning':
           return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Event Planning & Management</h1>
-              <p className="mb-4">Our comprehensive event planning and management services help businesses create impactful professional events, from small team-building activities to large-scale conferences. We handle all aspects of event execution to ensure your objectives are met while you focus on your core business.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Event Services Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Strategic event conceptualization and design</li>
-                <li className="mb-2">Venue selection and logistics coordination</li>
-                <li className="mb-2">Speaker and talent acquisition</li>
-                <li className="mb-2">Marketing and promotion management</li>
-                <li className="mb-2">On-site coordination and post-event evaluation</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Plan Your Business Event
-              </button>
-            </div>
+            <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+              <motion.div variants={slideUp}>
+                Please select a specific service
+              </motion.div>
+            </motion.div>
           );
-        case 'project-planning':
-          return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Project Planning & Management</h1>
-              <p className="mb-4">Our project planning and management expertise helps businesses execute complex initiatives efficiently and effectively. We provide structured methodologies, resource optimization, and monitoring systems to ensure projects are completed on time and within budget.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Project Management Services Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Comprehensive project planning and scope definition</li>
-                <li className="mb-2">Resource allocation and management</li>
-                <li className="mb-2">Risk assessment and mitigation strategies</li>
-                <li className="mb-2">Progress tracking and reporting systems</li>
-                <li className="mb-2">Quality assurance and stakeholder communication</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Consult on Project Management
-              </button>
-            </div>
-          );
-        case 'recruitment-planning':
-          return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Recruitment Planning & Consultation</h1>
-              <p className="mb-4">Our recruitment planning and consultation services help businesses develop effective talent acquisition strategies. We provide guidance on creating efficient recruitment processes, employer branding, and candidate assessment methods to attract and retain top talent.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Recruitment Services Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Workforce planning and needs analysis</li>
-                <li className="mb-2">Recruitment process optimization</li>
-                <li className="mb-2">Job description and requirement development</li>
-                <li className="mb-2">Candidate sourcing strategy consultation</li>
-                <li className="mb-2">Interview and selection methodology design</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Improve Your Recruitment Process
-              </button>
-            </div>
-          );
-        case 'job-creation':
-          return (
-            <div>
-              <h1 className="text-3xl font-bold mb-6">Job Creation & Consultation</h1>
-              <p className="mb-4">Our job creation and consultation services assist businesses in identifying opportunities for organizational growth and workforce expansion. We provide insights on market trends, skill requirements, and organizational structures to support sustainable job creation initiatives.</p>
-              <h2 className="text-xl font-semibold mt-6 mb-3">Our Job Creation Services Include:</h2>
-              <ul className="list-disc ml-6 mb-6">
-                <li className="mb-2">Organizational needs assessment and gap analysis</li>
-                <li className="mb-2">Market and industry opportunity identification</li>
-                <li className="mb-2">Role definition and job design consultation</li>
-                <li className="mb-2">Workforce development planning</li>
-                <li className="mb-2">Expansion and scaling strategy development</li>
-              </ul>
-              <button className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4">
-                Consult on Job Creation
-              </button>
-            </div>
-          );
-        default:
-          return <div>Please select a specific service</div>;
+     
       }
     }
 
-    return <div>Please select a service from the menu</div>;
+    // Business Services Content
+    if (serviceType === "business") {
+      switch (service) {
+             case 'event-planning':
+               return (
+                 <motion.div
+                   key="event-planning"
+                   initial="hidden"
+                   animate="visible"
+                   exit="exit"
+                   variants={fadeIn}
+                 >
+                   <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">Event Planning & Management</motion.h1>
+                   <motion.p variants={slideUp} className="mb-4">Our comprehensive event planning and management services help businesses organize and execute successful professional events. From corporate gatherings and conferences to recruitment fairs and networking sessions, we handle all aspects of event coordination to ensure a smooth and impactful experience.</motion.p>
+                   <motion.h2 variants={slideUp} className="text-xl font-semibold mt-6 mb-3">Our Event Services Include:</motion.h2>
+                   <motion.ul variants={staggerContainer} className="list-disc ml-6 mb-6">
+                     {[
+                       "Strategic event conceptualization and planning",
+                       "Venue selection and logistics coordination",
+                       "Speaker and participant management",
+                       "Marketing and promotion strategies",
+                       "On-site coordination and post-event evaluation"
+                     ].map((item, index) => (
+                       <motion.li key={index} variants={slideUp} className="mb-2">{item}</motion.li>
+                     ))}
+                   </motion.ul>
+                   <motion.a href="tel:+14165229579" className="block">
+       <motion.button
+         variants={slideUp}
+         whileHover={{ scale: 1.05 }}
+         whileTap={{ scale: 0.95 }}
+         className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+       >
+         Plan a event
+       </motion.button>
+     </motion.a>
+                 </motion.div>
+               );
+             case 'project-planning':
+               return (
+                 <motion.div
+                   key="project-planning"
+                   initial="hidden"
+                   animate="visible"
+                   exit="exit"
+                   variants={fadeIn}
+                 >
+                   <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">Project Planning & Management</motion.h1>
+                   <motion.p variants={slideUp} className="mb-4">Our project planning and management services help businesses efficiently organize, execute, and complete important initiatives. We provide structured methodologies and expert guidance to ensure your projects are delivered on time, within budget, and with the desired outcomes.</motion.p>
+                   <motion.h2 variants={slideUp} className="text-xl font-semibold mt-6 mb-3">Our Project Management Services Include:</motion.h2>
+                   <motion.ul variants={staggerContainer} className="list-disc ml-6 mb-6">
+                     {[
+                       "Project scope definition and planning",
+                       "Resource allocation and scheduling",
+                       "Risk assessment and mitigation strategies",
+                       "Progress tracking and reporting",
+                       "Quality assurance and stakeholder management"
+                     ].map((item, index) => (
+                       <motion.li key={index} variants={slideUp} className="mb-2">{item}</motion.li>
+                     ))}
+                   </motion.ul>
+                   <motion.a href="tel:+14165229579" className="block">
+       <motion.button
+         variants={slideUp}
+         whileHover={{ scale: 1.05 }}
+         whileTap={{ scale: 0.95 }}
+         className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+       >
+         Book a Consultation
+       </motion.button>
+     </motion.a>
+                 </motion.div>
+               );
+             case 'recruitment-planning':
+               return (
+                 <motion.div
+                   key="recruitment-planning"
+                   initial="hidden"
+                   animate="visible"
+                   exit="exit"
+                   variants={fadeIn}
+                 >
+                   <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">Recruitment Planning & Consultation</motion.h1>
+                   <motion.p variants={slideUp} className="mb-4">Our recruitment planning and consultation services help businesses develop effective talent acquisition strategies. We work with you to identify staffing needs, create recruitment plans, and implement efficient hiring processes to attract and retain top talent.</motion.p>
+                   <motion.h2 variants={slideUp} className="text-xl font-semibold mt-6 mb-3">Our Recruitment Services Include:</motion.h2>
+                   <motion.ul variants={staggerContainer} className="list-disc ml-6 mb-6">
+                     {[
+                       "Workforce needs assessment and planning",
+                       "Recruitment process optimization",
+                       "Job description development",
+                       "Candidate sourcing and screening strategies",
+                       "Employer branding and talent attraction"
+                     ].map((item, index) => (
+                       <motion.li key={index} variants={slideUp} className="mb-2">{item}</motion.li>
+                     ))}
+                   </motion.ul>
+                   <motion.a href="tel:+14165229579" className="block">
+       <motion.button
+         variants={slideUp}
+         whileHover={{ scale: 1.05 }}
+         whileTap={{ scale: 0.95 }}
+         className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+       >
+         Book a Consultation
+       </motion.button>
+     </motion.a>
+                 </motion.div>
+               );
+             case 'job-creation':
+               return (
+                 <motion.div
+                   key="job-creation"
+                   initial="hidden"
+                   animate="visible"
+                   exit="exit"
+                   variants={fadeIn}
+                 >
+                   <motion.h1 variants={slideUp} className="text-3xl font-bold mb-6">Job Creation & Consultation</motion.h1>
+                   <motion.p variants={slideUp} className="mb-4">Our job creation and consultation services help businesses design effective roles and organizational structures. We provide insights on job market trends, compensation benchmarks, and role optimization to help you create positions that attract qualified candidates and contribute to your business objectives.</motion.p>
+                   <motion.h2 variants={slideUp} className="text-xl font-semibold mt-6 mb-3">Our Job Creation Services Include:</motion.h2>
+                   <motion.ul variants={staggerContainer} className="list-disc ml-6 mb-6">
+                     {[
+                       "Organizational structure assessment",
+                       "Role design and job description development",
+                       "Competitive compensation planning",
+                       "Skills gap analysis and workforce planning",
+                       "Career path and advancement structure design"
+                     ].map((item, index) => (
+                       <motion.li key={index} variants={slideUp} className="mb-2">{item}</motion.li>
+                     ))}
+                   </motion.ul>
+                   <motion.a href="tel:+14165229579" className="block">
+       <motion.button
+         variants={slideUp}
+         whileHover={{ scale: 1.05 }}
+         whileTap={{ scale: 0.95 }}
+         className="bg-primarythree text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition mt-4"
+       >
+         Start Creating jobs
+       </motion.button>
+     </motion.a>
+                 </motion.div>
+               );
+             default:
+               return (
+                 <motion.div
+                   initial="hidden"
+                   animate="visible"
+                   variants={fadeIn}
+                 >
+                   <motion.div variants={slideUp}>Please select a specific business service</motion.div>
+                 </motion.div>
+               );
+           }
+    }
+
+    return (
+      <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+        <motion.div variants={slideUp}>
+          Please select a service type and specific service
+        </motion.div>
+      </motion.div>
+    );
   };
 
   return (
-    <div className="w-full min-h-screen pb-12">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg p-8 mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6">
-            Our Professional Services
-          </h1>
-          <p className="text-center max-w-3xl mx-auto text-gray-700">
-            At Simms on Talent, we provide comprehensive services designed to help both students and businesses achieve their full potential. Explore our offerings and discover how we can support your success.
-          </p>
-        </div>
+    <div ref={contentRef} className="container mx-auto px-4 py-[12dvh]">
+      <motion.div
+        ref={headerRef}
+        initial="hidden"
+        animate={isHeaderInView ? "visible" : "hidden"}
+        variants={fadeIn}
+        className="mb-8 text-center"
+      >
+        <motion.h1
+          variants={slideUp}
+          className="text-4xl md:text-5xl font-bold mb-4 text-primarythree"
+        >
+          Our Services
+        </motion.h1>
+        <motion.p variants={slideUp} className="text-lg max-w-2xl mx-auto">
+          Comprehensive support for both students and businesses to achieve
+          their professional goals.
+        </motion.p>
+      </motion.div>
 
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="md:w-1/4">
-            {renderServicesNav()}
-          </div>
-
-          <div className="md:w-3/4">
-            <div
-              ref={contentRef}
-              className={`bg-white p-6 rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-              {renderServiceContent()}
-            </div>
-          </div>
+      <div className="grid md:grid-cols-4 gap-8">
+        <div className="md:col-span-1">{renderServicesNav()}</div>
+        <div className="md:col-span-3">
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex justify-center items-center h-64"
+              >
+                <div className="animate-pulse flex space-x-2">
+                  <div className="w-3 h-3 bg-primarythree rounded-full"></div>
+                  <div className="w-3 h-3 bg-primarythree rounded-full"></div>
+                  <div className="w-3 h-3 bg-primarythree rounded-full"></div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={currentService || "default"}
+                className="bg-white p-6 rounded-lg shadow-sm"
+              >
+                {renderServiceContent()}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-    </div>
-  );
-}
-
-// Loading component for the Suspense fallback
-function Loading() {
-  return (
-    <div className="pt-[12vh] w-full min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primarythree border-r-transparent" role="status">
-          <span className="sr-only">Loading...</span>
-        </div>
-        <p className="mt-2 text-gray-700">Loading services...</p>
-      </div>
-    </div>
-  );
-}
-
-// Main page component - wrapped in Suspense
-const ServicesPage = () => {
-  return (
-    <div className="pt-[12vh]">
-      <Suspense fallback={<Loading />}>
-        <ServicesContent />
-      </Suspense>
     </div>
   );
 };
 
-export default ServicesPage;
+// Main component that uses Suspense
+function ServicesContent() {
+  return (
+    <Suspense fallback={<div>Loading services...</div>}>
+      <ServiceContentWithParams />
+    </Suspense>
+  );
+}
+
+export default ServicesContent;

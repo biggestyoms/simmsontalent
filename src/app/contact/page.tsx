@@ -2,7 +2,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className='w-full h-full bg-primary pt-[9dvh]'>
+    <div className='w-full h-full bg-primaryone pt-[9dvh]'>
       <div className="lg:h-[125dvh] h-full flex items-center justify-center px-4">
   <div className="w-full max-w-xl py-12">
     <h1 className="text-[48px] font-[700] text-center text-white mb-4 leading-[58px]">Send a message</h1>

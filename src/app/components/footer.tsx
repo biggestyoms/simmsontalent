@@ -7,10 +7,10 @@ import { FaLinkedinIn } from "react-icons/fa";
 const Footer = () => {
   return (
 <div className="w-full h-full bg-[#f3f2f5] shadow-[0_-5px_14px_rgba(0,0,0,0.1)] flex items-center justify-center">
-<div className=" w-[90%] h-[40dvh]  flex items-center justify-center">
+<div className=" md:w-[90%] w-[97%] h-[40dvh]  flex items-center justify-center">
         <div className=" h-[30dvh] w-full flex flex-col items-center justify-between">
           <div className="w-full h-[10dvh] flex items-center justify-between ">
-            <div className="w-[15%] h-full ">
+            <div className="md:w-[15%] w-[20%] h-full ">
               <Image
                 src={images.Logo}
                 alt="Logo"
@@ -31,7 +31,7 @@ const Footer = () => {
                 Contact
               </Link>
             </div>
-            <div className="w-[15%] h-full flex items-center justify-center gap-[11%]">
+            <div className="md:w-[15%] w-[20%] h-full flex items-center justify-center gap-[11%]">
             <FaInstagram  size={30} color="#035A93"/>
             <FaLinkedinIn size={30} color="#035A93" />
             </div>
