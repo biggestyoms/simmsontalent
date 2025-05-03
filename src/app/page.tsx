@@ -53,7 +53,7 @@ const ServiceCard = ({
 }) => {
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.3 });
-  
+
   return (
     <motion.div
       ref={cardRef}
@@ -85,7 +85,7 @@ const ServiceSection = ({
 }) => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
-  
+
   return (
     <motion.div 
       ref={sectionRef}
@@ -100,14 +100,14 @@ const ServiceSection = ({
       >
         {title}
       </motion.h2>
-      
+
       <motion.p 
         variants={fadeInUp} 
         className="lg:text-[16px] text-[15px] mt-4 lg:leading-[24px]"
       >
         {description}
       </motion.p>
-      
+
       <motion.ul 
         variants={staggerContainer} 
         className="mt-4 space-y-2"
@@ -123,7 +123,7 @@ const ServiceSection = ({
           </motion.li>
         ))}
       </motion.ul>
-      
+
       <motion.p 
         variants={fadeIn}
         className="mt-4 italic font-semibold text-gray-700"
@@ -136,12 +136,12 @@ const ServiceSection = ({
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -393,3 +393,4 @@ export default function Home() {
     </div>
   );
 }
+

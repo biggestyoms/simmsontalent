@@ -119,13 +119,13 @@ const AboutPage = () => {
             </p>
           </motion.div>
           
-          <motion.button
+          <motion.a href='tel:+14165229579'
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="mt-8 bg-white text-black px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg hover:bg-primary transition-all"
           >
             Get in Touch
-          </motion.button>
+          </motion.a>
         </motion.div>
         
         <motion.div 
@@ -218,13 +218,13 @@ const AboutPage = () => {
             Whether you're looking to enhance your career or find the right talent for your business, we're here to help you succeed.
           </motion.p>
           
-          <motion.button
+          <motion.a href="tel:+14165529579"
             whileHover={{ scale: 1.05, backgroundColor: "#90e0ef" }}
             whileTap={{ scale: 0.95 }}
             className="bg-primarythree text-white px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all"
           >
             Schedule a Consultation
-          </motion.button>
+          </motion.a>
         </div>
       </motion.div>
          {/* Floating scroll indicator */}
